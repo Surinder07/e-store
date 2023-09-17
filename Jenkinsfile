@@ -5,38 +5,51 @@ pipeline {
         // Specify the Maven installation name as configured in Jenkins
         maven "Maven 3.8.5"
     }
+        stages {
+            stage('Compile and Clean') {
+                steps {
+                    // Run Maven on a Unix agent.
 
-    stages {
-        stage('Checkout') {
-            steps {
-                // Check out your source code from your version control system (e.g., Git)
-                checkout scm
+                    sh "mvn clean compile"
+                }
             }
-        }
+            stage('deploy') {
 
-        stage('Build') {
-            steps {
-                // Build your Java application using Maven
-                sh 'mvn clean package'
+                steps {
+                    sh "mvn package"
+                }
             }
-        }
+            stage('Build Docker image'){
 
-        stage('Test') {
-            steps {
-                // Run tests for your Java application using Maven
-                sh 'mvn test'
+                steps {
+                    echo "hello e store"
+                    sh 'ls'
+                    sh 'docker build -t  surinder0322/e-store:${BUILD_NUMBER} .'
+                }
+            }
+            stage('Docker Login'){
+
+                steps {
+                     withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+                        sh "docker login -u surinder0322 -p ${Dockerpwd}"
+                    }
+                }
+            }
+            stage('Docker Push'){
+                steps {
+                    sh 'docker push surinder0322/e-store:${BUILD_NUMBER}'
+                }
+            }
+            stage('Docker deploy'){
+                steps {
+
+                    sh 'docker run -itd -p  8086:8080 surinder0322/e-store:${BUILD_NUMBER}'
+                }
+            }
+            stage('Archving') {
+                steps {
+                     archiveArtifacts '**/target/*.jar'
+                }
             }
         }
     }
-
-    post {
-        success {
-            // This block runs if the pipeline is successful
-            echo 'Build and test succeeded! Deploy your application here.'
-        }
-        failure {
-            // This block runs if the pipeline fails
-            echo 'Build or test failed. Investigate and fix the issues.'
-        }
-    }
-}
