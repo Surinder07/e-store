@@ -43,7 +43,7 @@ pipeline {
             stage('Docker deploy'){
                 steps {
 
-                    sh 'docker run -itd -p  9090:8080 surinder0322/e-store:${BUILD_NUMBER}'
+                    sh 'docker run -itd -p  9091:8080 surinder0322/e-store:${BUILD_NUMBER}'
                 }
             }
             stage('Archving') {
