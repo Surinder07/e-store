@@ -1,4 +1,4 @@
-package com.shopeasy.estore.employee;
+package com.shopeasy.estore.product;
 
 import lombok.*;
 
