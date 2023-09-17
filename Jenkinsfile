@@ -1,12 +1,17 @@
 pipeline {
     agent any
+     tools {
+            maven "3.8.5"
+
+        }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Check out your source code from your version control system (e.g., Git)
-                checkout scm
-            }
+        stage('Compile and Clean') {
+                    steps {
+                        // Run Maven on a Unix agent.
+
+                        sh "mvn clean compile"
+                    }
         }
 
         stage('Build') {
