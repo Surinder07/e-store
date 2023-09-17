@@ -1,17 +1,17 @@
 pipeline {
     agent any
-     tools {
-            maven "3.8.5"
 
-        }
+    tools {
+        // Specify the Maven installation name as configured in Jenkins
+        maven "Maven 3.8.5"
+    }
 
     stages {
-        stage('Compile and Clean') {
-                    steps {
-                        // Run Maven on a Unix agent.
-
-                        sh "mvn clean compile"
-                    }
+        stage('Checkout') {
+            steps {
+                // Check out your source code from your version control system (e.g., Git)
+                checkout scm
+            }
         }
 
         stage('Build') {
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                // Run tests for your Java application
+                // Run tests for your Java application using Maven
                 sh 'mvn test'
             }
         }
