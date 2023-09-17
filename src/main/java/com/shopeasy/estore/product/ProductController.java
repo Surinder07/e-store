@@ -14,6 +14,7 @@ public class ProductController {
 
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts(){
+        System.out.println("Test for github pull request");
         return productService.getProductList();
     }
 
