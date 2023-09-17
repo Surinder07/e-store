@@ -1,4 +1,4 @@
-package com.shopeasy.estore.employee;
+package com.shopeasy.estore.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
