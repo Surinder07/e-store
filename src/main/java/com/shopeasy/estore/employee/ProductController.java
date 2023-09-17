@@ -14,7 +14,6 @@ public class ProductController {
 
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts(){
-
         return productService.getProductList();
     }
 
@@ -26,7 +25,5 @@ public class ProductController {
     @DeleteMapping(path = "deleteProduct/{productId}")
     public void deleteProduct(@PathVariable("productId") Long id){
         productService.deleteProduct(id);
-
     }
-
 }
