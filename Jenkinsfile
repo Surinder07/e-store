@@ -1,55 +1,37 @@
 pipeline {
-    agent any 
-    tools {
-        maven "3.8.5"
-    
-    }
+    agent any
+
     stages {
-        stage('Compile and Clean') { 
+        stage('Checkout') {
             steps {
-                // Run Maven on a Unix agent.
-              
-                sh "mvn clean compile"
+                // Check out your source code from your version control system (e.g., Git)
+                checkout scm
             }
         }
-        stage('deploy') { 
-            
+
+        stage('Build') {
             steps {
-                sh "mvn package"
+                // Build your Java application using Maven
+                sh 'mvn clean package'
             }
         }
-        stage('Build Docker image'){
-          
+
+        stage('Test') {
             steps {
-                echo "Hello Java Express"
-                sh 'ls'
-                sh 'docker build -t  anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER} .'
+                // Run tests for your Java application
+                sh 'mvn test'
             }
         }
-        stage('Docker Login'){
-            
-            steps {
-                 withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
-                    sh "docker login -u anvbhaskar -p ${Dockerpwd}"
-                }
-            }                
+    }
+
+    post {
+        success {
+            // This block runs if the pipeline is successful
+            echo 'Build and test succeeded! Deploy your application here.'
         }
-        stage('Docker Push'){
-            steps {
-                sh 'docker push anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER}'
-            }
-        }
-        stage('Docker deploy'){
-            steps {
-               
-                sh 'docker run -itd -p  8081:8080 anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER}'
-            }
-        }
-        stage('Archving') { 
-            steps {
-                 archiveArtifacts '**/target/*.jar'
-            }
+        failure {
+            // This block runs if the pipeline fails
+            echo 'Build or test failed. Investigate and fix the issues.'
         }
     }
 }
-
