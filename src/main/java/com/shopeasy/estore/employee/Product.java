@@ -11,21 +11,21 @@ import jakarta.persistence.*;
 @ToString
 @Entity
 @Table
-public class Employee {
+public class Product {
 
     @Id
     @SequenceGenerator(
-            name = "employee_sequence",
-            sequenceName = "employee_sequence",
+            name = "product_sequence",
+            sequenceName = "product_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "employee_sequence"
+            generator = "product_sequence"
     )
     private Long id;
-    private String name;
-    private String email;
-    private int age;
-    private double salary;
+    private String productName;
+    private String productType;
+    private String productDescription;
+    private double price;
 }
