@@ -2,6 +2,8 @@ package com.shopeasy.estore.product;
 
 import com.shopeasy.estore.dto.ErrorDto;
 import com.shopeasy.estore.security.exception.ProductNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,10 +20,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts(){
-        System.out.println("Test for github pull request");
+        logger.info("This is an informational log message.");
+        logger.error("This is an error log message.");
         return productService.getProductList();
     }
 
@@ -35,6 +39,7 @@ public class ProductController {
                         .statusCode(HttpStatus.BAD_REQUEST.value())
                         .timestamp(Instant.now()).build()
         );
+
     }
 
     try{
