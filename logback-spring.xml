@@ -6,11 +6,9 @@
     </appender>
 
     <logzioUrl>https://listener.logz.io:8071</logzioUrl>
-    <type>java</type>
-
 
     <root level="debug">
         <!-- IMPORTANT: This line is required -->
-        <appender-ref ref="LogzioLogbackAppender"/>
+        <appender-ref ref="logzio"/>
     </root>
 </configuration>
