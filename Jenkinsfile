@@ -20,26 +20,14 @@ pipeline {
                     sh "mvn package"
                 }
             }
-            stage('Build Docker image') {
-                        steps {
-                            script {
-                                echo "hello e store"
-                                sh 'ls'
+            stage('Build Docker image'){
 
-                                // Build the Docker image with logging
-                                def dockerImage = docker.build("surinder0322/e-store:${BUILD_NUMBER}", ".")
-
-                                // Capture Docker logs
-                                def logs = dockerImage.inside {
-                                    sh 'echo "Docker image build successful!"'
-                                }
-
-                                // Print Docker logs
-                                println "Docker Build Logs:"
-                                println logs
-                            }
-                        }
-                    }
+                steps {
+                    echo "hello e store"
+                    sh 'ls'
+                    sh 'docker build -t  surinder0322/e-store:${BUILD_NUMBER} .'
+                }
+            }
             stage('Docker Login'){
 
                 steps {
@@ -56,7 +44,7 @@ pipeline {
             stage('Docker deploy'){
                 steps {
 
-                    sh 'docker run -itd -p  9092:8080 surinder0322/e-store:${BUILD_NUMBER}'
+                    sh 'docker run -p  9092:8080 surinder0322/e-store:${BUILD_NUMBER}'
                 }
             }
             stage('Archving') {
