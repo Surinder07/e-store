@@ -60,8 +60,18 @@ public class ProductController {
         productService.saveProduct(product);
     }
 
+    @PutMapping(path="/updateproduct",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
+
+        return this.productService.updateProduct(product);
+    }
+
     @DeleteMapping(path = "deleteProduct/{productId}")
     public void deleteProduct(@PathVariable("productId") Long id){
-            productService.deleteProduct(id);
+            productService.deleteProductById(id);
     }
+
+
+
+
 }
