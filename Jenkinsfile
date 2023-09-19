@@ -1,56 +1,65 @@
-currentBuild.displayName = ""
 pipeline {
     agent any
 
     tools {
-        // Specify the Maven installation name as configured in Jenkins
         maven "Maven 3.8.5"
     }
-        stages {
-            stage('Compile and Clean') {
-                steps {
-                    // Run Maven on a Unix agent.
 
-                    sh "mvn clean compile"
-                }
+    stages {
+        stage('Compile and Clean') {
+            steps {
+                sh "mvn clean compile"
             }
-            stage('deploy') {
-
-                steps {
-                    sh "mvn package"
-                }
+        }
+        stage('Deploy') {
+            steps {
+                sh "mvn package"
             }
-            stage('Build Docker image'){
-
-                steps {
+        }
+        stage('Build Docker image') {
+            steps {
+                script {
                     echo "hello e store"
                     sh 'ls'
-                    sh 'docker build -t  surinder0322/e-store:${BUILD_NUMBER} .'
+
+                    // Build the Docker image with logging
+                    def dockerImage = docker.build("surinder0322/e-store:${BUILD_NUMBER}", ".")
+
+                    // Capture Docker logs
+                    def logs = dockerImage.inside {
+                        sh 'echo "Docker image build successful!"'
+                    }
+
+                    // Print Docker logs
+                    println "Docker Build Logs:"
+                    println logs
                 }
             }
-            stage('Docker Login'){
-
-                steps {
-                     withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+        }
+        stage('Docker Login') {
+            steps {
+                withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+                    // Log in to Docker registry
+                    docker.withRegistry('https://registry.example.com', 'docker-credentials') {
                         sh "docker login -u surinder0322 -p ${Dockerpwd}"
                     }
                 }
             }
-            stage('Docker Push'){
-                steps {
-                    sh 'docker push surinder0322/e-store:${BUILD_NUMBER}'
-                }
+        }
+        stage('Docker Push') {
+            steps {
+                sh 'docker push surinder0322/e-store:${BUILD_NUMBER}'
             }
-            stage('Docker deploy'){
-                steps {
-
-                    sh 'docker run -itd -p  9092:8080 surinder0322/e-store:${BUILD_NUMBER}'
-                }
+        }
+        stage('Docker Deploy') {
+            steps {
+                sh 'docker run -itd -p 9092:8080 surinder0322/e-store:${BUILD_NUMBER}'
             }
-            stage('Archving') {
-                steps {
-                     archiveArtifacts '**/target/*.jar'
-                }
+        }
+        stage('Archiving') {
+            steps {
+                archiveArtifacts '**/target/*.jar'
             }
         }
     }
+}
