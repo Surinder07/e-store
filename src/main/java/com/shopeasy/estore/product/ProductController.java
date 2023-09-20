@@ -60,15 +60,21 @@ public class ProductController {
         productService.saveProduct(product);
     }
 
-    @PutMapping(path="/updateproduct",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
-
-        return this.productService.updateProduct(product);
+    @PutMapping(path="/updateProduct/{productId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Product> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
+        Product prod = productService.getProductById(id).get();
+        prod.setPrice(product.getPrice());
+        prod.setProductDescription(product.getProductDescription());
+        prod.setProductName(product.getProductName());
+        prod.setProductType(product.getProductType());
+        productService.saveProduct(prod);
+        return ResponseEntity.of(Optional.of(prod));
     }
 
     @DeleteMapping(path = "deleteProduct/{productId}")
-    public void deleteProduct(@PathVariable("productId") Long id){
-            productService.deleteProductById(id);
+    public ResponseEntity<Product> deleteProduct(@PathVariable("productId") Long id){
+            Product deletedprod = productService.deleteProductById(id);
+            return ResponseEntity.of(Optional.of(deletedprod));
     }
 
 

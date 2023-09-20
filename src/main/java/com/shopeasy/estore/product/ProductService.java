@@ -17,6 +17,14 @@ public class ProductService {
 
         return productRepository.findAll();
     }
+    public Optional<Product> getProductById(Long id){
+        if(id != null){
+            return productRepository.findById(id);
+
+        }else{
+            throw new ProductNotFoundException("Product Not Found.");
+        }
+    }
 
     public void saveProduct(Product employee) {
         productRepository.save(employee);
