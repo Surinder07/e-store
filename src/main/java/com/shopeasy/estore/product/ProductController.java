@@ -44,18 +44,7 @@ public class ProductController {
 
                         .timestamp(Instant.now()).build());
         }
-        try{
-            product = Optional.ofNullable(productService.getProductById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found")));
-            return ResponseEntity.status(200).body(product);
-        }catch (Exception e){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-
-                        .timestamp(Instant.now()).build()
-        );
-
-    }
-
-    try{
+          try{
         product = Optional.ofNullable(productService.getProductById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found")));
         return ResponseEntity.status(200).body(product);
     } catch (Exception e){
