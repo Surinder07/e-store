@@ -49,24 +49,10 @@ public class ProductController {
             return ResponseEntity.status(200).body(product);
         }catch (Exception e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-
-                        .timestamp(Instant.now()).build()
-        );
-
+                        ErrorDto.builder().statusCode(HttpStatus.NOT_FOUND.value())
+                                .message("Product Not Found")
+                                .timestamp(Instant.now()).build());
     }
-
-    try{
-        product = Optional.ofNullable(productService.getProductById(id).orElseThrow(() -> new ProductNotFoundException("Product Not Found")));
-        return ResponseEntity.status(200).body(product);
-    } catch (Exception e){
-        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-
-                ErrorDto.builder().message(e.getMessage())
-                        .applicationId("APP1")
-                        .statusCode(HttpStatus.NOT_FOUND.value())
-                        .timestamp(Instant.now()).build()
-            );
-        }
     }
 
     @PostMapping("/addProduct")
