@@ -1,0 +1,15 @@
+<configuration>
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <appender name="logzio" class="io.logz.logback.LogzioLogbackAppender">
+        <token>AHpHHinuNfKYEBupJKNsxMzkznWwBehD</token>
+        <type>logback</type>
+    </appender>
+
+    <logzioUrl>https://listener.logz.io:8071</logzioUrl>
+
+    <root level="debug">
+        <!-- IMPORTANT: This line is required -->
+        <appender-ref ref="logzio"/>
+    </root>
+</configuration>
+

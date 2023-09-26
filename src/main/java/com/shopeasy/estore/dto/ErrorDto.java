@@ -22,4 +22,8 @@ public class ErrorDto {
     private String applicationId;
 
     private String details;
+
 }
+
+}
+
