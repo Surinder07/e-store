@@ -97,7 +97,7 @@ public class ProductController {
             return ResponseEntity.of (Optional.of (prod));
         }
         else {
-            return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("Product with id " + id + " was not found").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
+            return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("Product with id " + id + " was not found").applicationId("APP1").details ("The product you requested to update was not found in the database").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
 
         }
     }
