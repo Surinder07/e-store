@@ -9,7 +9,6 @@ import java.util.List;
 
 @Builder
 @Data
-
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorDto {

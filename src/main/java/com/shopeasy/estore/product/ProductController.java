@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @RestController
@@ -80,15 +78,28 @@ public class ProductController {
     }
 
 
-    @PutMapping(path="/updateProduct/{productId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
-        Product prod = productService.getProductById(id).get();
-        prod.setPrice(product.getPrice());
-        prod.setProductDescription(product.getProductDescription());
-        prod.setProductName(product.getProductName());
-        prod.setProductType(product.getProductType());
-        productService.saveProduct(prod);
-        return ResponseEntity.of(Optional.of(prod));
+    @PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
+        Optional<Product> oldProd = productService.getProductById (id);
+        if (product.getProductName ().isEmpty () || product.getProductType ().isEmpty () || product.getProductDescription ().isEmpty ()) {
+            return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("ProductName or Type Can't be empty").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
+        }
+        if (product.getPrice () <= 0) {
+            return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("Product Price Can't be zero or negative ").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
+        }
+
+        if (oldProd.isPresent ()) {
+            Product prod = productService.getProductById (id).get ();
+            prod.setPrice (product.getPrice ());
+            prod.setProductDescription (product.getProductDescription ());
+            prod.setProductName (product.getProductName ());
+            prod.setProductType (product.getProductType ());
+            return ResponseEntity.of (Optional.of (prod));
+        }
+        else {
+            return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("Product with id " + id + " was not found").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
+
+        }
     }
 
 
