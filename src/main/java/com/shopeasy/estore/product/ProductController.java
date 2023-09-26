@@ -70,8 +70,6 @@ public class ProductController {
     @PostMapping("/addProduct")
 
     public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
-    public ResponseEntity<?> addNewProduct(@Valid @RequestBody Product product) {
-
         if(product.getProductName().isEmpty() || product.getProductType().isEmpty()
                 || product.getProductDescription().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
