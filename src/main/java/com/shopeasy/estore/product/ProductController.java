@@ -81,6 +81,7 @@ public class ProductController {
     @PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
         Optional<Product> oldProd = productService.getProductById (id);
+
         if (product.getProductName ().isEmpty () || product.getProductType ().isEmpty () || product.getProductDescription ().isEmpty ()) {
             return ResponseEntity.status (HttpStatus.BAD_REQUEST).body (ErrorDto.builder ().message ("ProductName or Type Can't be empty").statusCode (HttpStatus.BAD_REQUEST.value ()).timestamp (Instant.now ()).build ());
         }
@@ -94,6 +95,7 @@ public class ProductController {
             prod.setProductDescription (product.getProductDescription ());
             prod.setProductName (product.getProductName ());
             prod.setProductType (product.getProductType ());
+            productService.saveProduct(prod);
             return ResponseEntity.of (Optional.of (prod));
         }
         else {
