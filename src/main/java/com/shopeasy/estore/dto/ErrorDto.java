@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
+
 @Builder
 @Data
-
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -20,4 +21,10 @@ public class ErrorDto {
     private Instant timestamp;
     //@ApiModelProperty(example = "Ap123")
     private String applicationId;
+
+    private String details;
+
 }
+
+}
+

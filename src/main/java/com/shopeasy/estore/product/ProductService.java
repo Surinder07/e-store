@@ -14,7 +14,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
     public List<Product> getProductList(){
-
         return productRepository.findAll();
     }
     public Optional<Product> getProductById(Long id){
@@ -26,8 +25,8 @@ public class ProductService {
         }
     }
 
-    public void saveProduct(Product employee) {
-        productRepository.save(employee);
+    public void saveProduct(Product product) {
+        productRepository.save(product);
     }
 
     public Optional<Product> deleteProduct(Long id) {
