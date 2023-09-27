@@ -8,23 +8,27 @@ import com.stripe.model.Charge;
 import com.stripe.model.Token;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Service
 @Slf4j //log our error msg when generating token from stripe
 public class StripeService {
-    @Value("$api.stripe.key")
-    private String stripeApiKey;
 
+    private String stripeApiPublishedKey = "pk_test_51NsHEPFOBWvODlc06C2xu7BTUl5iwBmhrRDlOeGX9O8OTJs9PUNSgke7IWjaxNYrcShhsOrLAQy5QLSRnAMeBC7c00wqLdAJg0";
+    private String stripeApiSecretKey = "sk_test_51NsHEPFOBWvODlc0gGxcQqoOtMvKN1jTP3Tvom31caDQTsTk2CadyUER3FrTaa2XQ6HaLGdDMy5jyLiO90whRSI400U2kaYUTM";
     //initializing api key
     @PostConstruct //for init method to be initialized when StripeService
                     // object is created by Spring we need to use postConstruct
     public void init(){
-        Stripe.apiKey = stripeApiKey;
+        //Stripe.apiKey = stripeApiPublishedKey;
+        Stripe.apiKey = stripeApiSecretKey;
     }
 
     public StripeTokenDto createCardToken(StripeTokenDto model){
