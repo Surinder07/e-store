@@ -2,6 +2,10 @@ package com.shopeasy.estore.product;
 
 import com.shopeasy.estore.dto.ErrorDto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +39,15 @@ public class ProductController {
     @Autowired
     private ProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
-
+    @Operation(summary = "This request is used to fetch all the products available in the store")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+            description = "Fetched all products from the store",
+            content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404",
+            description = "Not Available",
+            content = @Content)
+    })
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts(){
         logger.info("This is an informational log message.");
