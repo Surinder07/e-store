@@ -2,6 +2,7 @@ package com.shopeasy.estore.product;
 
 import com.shopeasy.estore.dto.ErrorDto;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,6 +56,15 @@ public class ProductController {
         return productService.getProductList();
     }
 
+
+
+    @ApiOperation(value = "Get a product by ID", response = Product.class)
+    @Operation(summary = "This request is used to fetch product available in the store using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @io.swagger.v3.oas.annotations.media.Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @GetMapping(path = "/getProductById/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getProductById(@PathVariable("productId") Long id){
     Optional<Product> product;
@@ -78,6 +88,8 @@ public class ProductController {
                                 .timestamp(Instant.now()).build());
         }
     }
+
+
 
     @PostMapping("/addProduct")
 
