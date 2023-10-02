@@ -118,13 +118,13 @@ public class ProductController {
     }
 
     @ApiOperation(value = "Update an existing product", response = Product.class)
-    @Operation(summary = "This request is used to edit a product which is available in the store database")
+    @Operation(summary = "This request is used to edit a product using its ID, in the store database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product updated successfully", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
     })
-@PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
         Optional<Product> oldProd = productService.getProductById (id);
 
@@ -153,7 +153,12 @@ public class ProductController {
         }
     }
 
-
+    @ApiOperation(value = "Delete a product by ID")
+    @Operation(summary = "This request is used to delete an existing product using its ID, from the store database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully", content = @io.swagger.v3.oas.annotations.media.Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @DeleteMapping(path = "deleteProduct/{productId}")
     public ResponseEntity<Optional<?>> deleteProduct(@PathVariable("productId") Long id) {
         Optional<Product> ProdToBeDeleted = productService.getProductById (id);
