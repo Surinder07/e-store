@@ -89,10 +89,14 @@ public class ProductController {
         }
     }
 
-
+    @ApiOperation(value = "Add a new product", response = Product.class)
+    @Operation(summary = "This request is used to add a new  product to the store database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product added successfully", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
 
     @PostMapping("/addProduct")
-
     public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
         if(product.getProductName().isEmpty() || product.getProductType().isEmpty()
                 || product.getProductDescription().isEmpty()){
