@@ -3,7 +3,9 @@ package com.shopeasy.estore.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -33,6 +35,12 @@ public class LoggingAdvice {
                 methodName + "()" + "Response :" +
                 mapper.writeValueAsString(object));
         return object;
-
+    }
+    @AfterThrowing(pointcut = "myPointCut()", throwing = "e")
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
+        log.error("Exception in {}.{}() with cause = {}",
+                joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature()
+                        .getName(), e.getCause() != null? e.getCause() : "NULL");
     }
 }
