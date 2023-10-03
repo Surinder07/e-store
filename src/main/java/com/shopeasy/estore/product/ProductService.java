@@ -16,8 +16,7 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-    @CachePut(cacheNames="Product")
-    @CacheEvict(cacheNames = "Product",key="#id",allEntries = true)
+    @Cacheable(cacheNames="Product")
     public List<Product> getProductList(){
         System.out.println("Getting Productssssss from Db");return productRepository.findAll();
     }
