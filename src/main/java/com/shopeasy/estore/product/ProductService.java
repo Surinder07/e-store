@@ -2,6 +2,8 @@ package com.shopeasy.estore.product;
 
 import com.shopeasy.estore.security.exception.InvalidProductException;
 import com.shopeasy.estore.security.exception.ProductNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -13,16 +15,18 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     @Autowired
     private ProductRepository productRepository;
     @Cacheable(cacheNames="Product")
     public List<Product> getProductList(){
-        System.out.println("Getting Productssssss from Db");return productRepository.findAll();
+        logger.info("getProductList called for DB....");
+        return productRepository.findAll();
     }
     @Cacheable(cacheNames = "Product",key="#id")
     public Optional<Product> getProductById(Long id){
-        System.out.println("Getting Product from Db");
+        logger.info("Getting Product from Db.. "+id);
         if(id != null){
             return productRepository.findById(id);
 
@@ -44,7 +48,7 @@ public class ProductService {
 
     @CachePut(cacheNames = "Product")
     public Product updateProduct(Product product){
-        System.out.println("Product Updated");
+        logger.info("Product Updated in Db..");
         if(product.getId()==null || product.getId()<=0) {
             throw new ProductNotFoundException("Invalid Product ID");
         }
@@ -58,6 +62,7 @@ public class ProductService {
 
     @CacheEvict(cacheNames = "Product",key="#id",allEntries = true)
     public Product deleteProductById(Long id){
+        logger.info("Product deleted from Db.. " +id);
         Product productToBeDeleted = productRepository
                 .findById(id)
                 .orElseThrow(()->new ProductNotFoundException("product you are trying to delete does not exist"));
