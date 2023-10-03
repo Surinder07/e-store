@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import jakarta.persistence.*;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Setter

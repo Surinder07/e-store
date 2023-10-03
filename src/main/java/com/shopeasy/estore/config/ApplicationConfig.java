@@ -1,5 +1,6 @@
 package com.shopeasy.estore.config;
 
+import com.shopeasy.estore.auth.UserNotFoundException;
 import com.shopeasy.estore.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> userrepository.findByEmail(username)
-                .orElseThrow(()-> new UsernameNotFoundException("User not Found"));
+                .orElseThrow(()-> new UserNotFoundException("User not Found"));
     }
     @Bean
     public AuthenticationProvider authenticationProvider(){

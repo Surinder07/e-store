@@ -3,6 +3,7 @@ package com.shopeasy.estore.product;
 import com.shopeasy.estore.dto.ErrorDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,6 @@ public class ProductController {
     }
 
     @PostMapping("/addProduct")
-
     public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
         if(product.getProductName().isEmpty() || product.getProductType().isEmpty()
                 || product.getProductDescription().isEmpty()){
