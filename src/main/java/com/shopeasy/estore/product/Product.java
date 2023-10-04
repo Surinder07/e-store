@@ -1,11 +1,14 @@
 package com.shopeasy.estore.product;
 
+import com.shopeasy.estore.cart.Cart;
 import lombok.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,4 +42,7 @@ public class Product {
     @Positive(message = "Price must be a positive value")
     @NotNull(message = "Product Price can't be null")
     private double price;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Cart> carts;
 }
