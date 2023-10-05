@@ -1,7 +1,5 @@
 package com.shopeasy.estore.aop;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,15 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Aspect
 @Component
 public class LoggingAdvice {
     Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
-//    @Pointcut(value = "execution(* com.shopeasy.estore.*.*.*(..) )")
+
     @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-    public void myPointCut(){
+    public void myPointCutRestController(){
     }
-    @Around("myPointCut()")
+    @Pointcut("@within(org.springframework.stereotype.Service)")
+    public void myPointCutService(){
+    }
+
+
+    @Around("myPointCutRestController() || myPointCutService()")
     public Object applicationLogger(ProceedingJoinPoint pjp) throws Throwable {
         ObjectMapper mapper = new ObjectMapper();
         String methodName=pjp.getSignature().getName();
@@ -29,18 +34,18 @@ public class LoggingAdvice {
         Object [] array =pjp.getArgs();
         log.info("Method invoked" + className + " : " +
                 methodName + "()" + "Arguments : " +
-                mapper.writeValueAsString(array));
+                mapper.writeValueAsString(array) + "Started at :" + new Date());
         Object object = pjp.proceed();
         log.info(className + " : " +
                 methodName + "()" + "Response :" +
-                mapper.writeValueAsString(object));
+                mapper.writeValueAsString(object) + "Ended at :" + new Date());
         return object;
     }
-    @AfterThrowing(pointcut = "myPointCut()", throwing = "e")
+    @AfterThrowing(pointcut = "myPointCutRestController() || myPointCutService()  ", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
         log.error("Exception in {}.{}() with cause = {}",
                 joinPoint.getSignature().getDeclaringTypeName(),
                 joinPoint.getSignature()
-                        .getName(), e.getCause() != null? e.getCause() : "NULL");
+                        .getName(), e.getCause() != null? e.getCause() : "NULL" + "Started at :" + new Date());
     }
 }
