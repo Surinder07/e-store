@@ -10,8 +10,12 @@ make sure docker is running
 
 
 DOCUMENTATION
-available at 
-http://localhost:9095/swagger-ui/index.html#/product-controller/getProductById
+swagger UI available at
+http://localhost:9095/swagger-ui/index.html
+
+swagger docs available at
+http://localhost:9095/api-docs
+
 
 ======
 Branch rules 
