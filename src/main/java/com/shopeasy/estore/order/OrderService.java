@@ -11,8 +11,8 @@ import java.util.Optional;
 @Service
 public class OrderService {
 
-    private OrderRepository orderRepository;
-    private ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
@@ -21,7 +21,7 @@ public class OrderService {
 
     public Order getOrderDetail(int orderId) {
         Optional<Order> order = this.orderRepository.findById(orderId);
-        return order.isPresent() ? order.get() : null;
+        return order.orElse(null);
     }
 
     public float getCartAmount(List<ShoppingCart> shoppingCartList) {
