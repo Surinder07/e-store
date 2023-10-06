@@ -39,4 +39,6 @@ public class Product {
     @Positive(message = "Price must be a positive value")
     @NotNull(message = "Product Price can't be null")
     private double price;
+
+    private int availableQuantity;
 }

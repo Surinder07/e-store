@@ -1,9 +1,13 @@
 package com.shopeasy.estore.order;
+import com.shopeasy.estore.customer.Customer;
+import com.shopeasy.estore.shoppingcart.ShoppingCart;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @Entity
