@@ -26,7 +26,7 @@ public class Product {
             strategy = GenerationType.SEQUENCE,
             generator = "product_sequence"
     )
-    private Long id;
+    private Long productId;
     @NotEmpty(message = "Product name is required")
     private String productName;
 
