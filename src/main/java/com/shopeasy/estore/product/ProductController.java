@@ -2,6 +2,12 @@ package com.shopeasy.estore.product;
 
 import com.shopeasy.estore.dto.ErrorDto;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +43,20 @@ public class ProductController {
     private ProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
+
+
+
+
+    @Operation(summary = "This request is used to fetch all the products available in the store")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Fetched all products from the store",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Product.class, example = "{productId:12332,productName:Samsung 4K LED TV}"))}),
+            @ApiResponse(responseCode = "404",
+                    description = "Not Available",
+                    content = @Content)
+    })
     @GetMapping("/getAllProducts")
     public List<Product> getAllProducts(){
         logger.info("This is an informational log message.");
@@ -44,6 +64,15 @@ public class ProductController {
         return productService.getProductList();
     }
 
+
+
+    @ApiOperation(value = "Get a product by ID", response = Product.class)
+    @Operation(summary = "This request is used to fetch product available in the store using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Invalid ID supplied", content = @io.swagger.v3.oas.annotations.media.Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @GetMapping(path = "/getProductById/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getProductById(@PathVariable("productId") Long id){
     Optional<Product> product;
@@ -68,8 +97,14 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/addProduct")
+    @ApiOperation(value = "Add a new product", response = Product.class)
+    @Operation(summary = "This request is used to add a new  product to the store database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product added successfully", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
 
+    @PostMapping("/addProduct")
     public ResponseEntity<?> addNewProduct(@RequestBody Product product) {
         if(product.getProductName().isEmpty() || product.getProductType().isEmpty()
                 || product.getProductDescription().isEmpty()){
@@ -90,8 +125,15 @@ public class ProductController {
         return ResponseEntity.of(Optional.of(product));
     }
 
-
-@PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update an existing product", response = Product.class)
+    @Operation(summary = "This request is used to edit a product using its ID, in the store database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated successfully", content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Product.class, example = "{productId:12332,productName:Samsung 4K LED TV}"))}),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
+    @PutMapping(path = "/updateProduct/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProduct(@PathVariable("productId") Long id, @RequestBody Product product) {
         Optional<Product> oldProd = productService.getProductById (id);
 
@@ -120,7 +162,12 @@ public class ProductController {
         }
     }
 
-
+    @ApiOperation(value = "Delete a product by ID")
+    @Operation(summary = "This request is used to delete an existing product using its ID, from the store database")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product deleted successfully", content = @io.swagger.v3.oas.annotations.media.Content),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
     @DeleteMapping(path = "deleteProduct/{productId}")
     public ResponseEntity<Optional<?>> deleteProduct(@PathVariable("productId") Long id) {
         Optional<Product> ProdToBeDeleted = productService.getProductById (id);

@@ -36,10 +36,10 @@ public class ProductService {
 
 
     public Product updateProduct(Product product){
-        if(product.getId()==null || product.getId()<=0) {
+        if(product.getProductId()==null || product.getProductId()<=0) {
             throw new ProductNotFoundException("Invalid Product ID");
         }
-        Optional<Product> optional = productRepository.findById(product.getId());
+        Optional<Product> optional = productRepository.findById(product.getProductId());
         Product prod = optional.orElseThrow(()->new ProductNotFoundException("Invalid Customer ID"));
         if(product.getProductName().isEmpty()  || product.getProductDescription().isEmpty() || product.getProductType().isEmpty()) {
             throw new InvalidProductException("Please fill in all the values for updating the product");

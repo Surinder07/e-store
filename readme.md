@@ -8,6 +8,15 @@ make sure docker is running
 2. check with -- docker images 
 3. docker container run -p 8085:8080 a9736e791f18
 
+
+DOCUMENTATION
+swagger UI available at
+http://localhost:9095/swagger-ui/index.html
+
+swagger docs available at
+http://localhost:9095/api-docs
+
+
 ======
 Branch rules 
 Master --> protected 
