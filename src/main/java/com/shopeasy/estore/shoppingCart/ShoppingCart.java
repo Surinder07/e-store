@@ -5,6 +5,9 @@ import com.shopeasy.estore.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,9 +20,13 @@ public class ShoppingCart {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "product_id", referencedColumnName = "id")
-        private Product product;
+//        @OneToMany(fetch = FetchType.EAGER)
+//        @JoinColumn(name = "product_id", referencedColumnName = "id")
+//        private ArrayList<Product> product;
+
+        @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Product> products = new ArrayList<>();
+
 
         @OneToOne
         @JoinColumn(name = "user_id", referencedColumnName = "id")

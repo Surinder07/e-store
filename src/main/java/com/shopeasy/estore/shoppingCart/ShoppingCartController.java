@@ -21,7 +21,7 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addToCart(@RequestParam Long productId,@RequestParam Long userId, @RequestParam int quantity) {
+    public ResponseEntity<String> addToCart(@RequestParam Long productId, @RequestParam int quantity, @RequestParam Long userId) {
         try {
             shoppingCartService.addToCart(productId, userId, quantity);
             return ResponseEntity.ok("Product added to cart successfully.");
