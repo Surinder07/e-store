@@ -127,7 +127,8 @@ public class ProductController {
     @ApiOperation(value = "Update an existing product", response = Product.class)
     @Operation(summary = "This request is used to edit a product using its ID, in the store database")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product updated successfully", content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "200", description = "Product updated successfully", content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Product.class, example = "{productId:12332,productName:Samsung 4K LED TV}"))}),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @io.swagger.v3.oas.annotations.media.Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @io.swagger.v3.oas.annotations.media.Content)
     })
