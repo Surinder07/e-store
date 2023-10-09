@@ -5,15 +5,16 @@ import com.shopeasy.estore.product.Product;
 import com.shopeasy.estore.product.ProductRepository;
 import com.shopeasy.estore.security.exception.InsufficientQuantityException;
 import com.shopeasy.estore.security.exception.ProductNotFoundException;
+import com.shopeasy.estore.shoppingCart.cartProducts.cartProducts;
 import com.shopeasy.estore.user.User;
 import com.shopeasy.estore.user.UserRepository;
-import com.shopeasy.estore.user.dto.userDto;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static springfox.documentation.spi.service.contexts.SecurityContext.builder;
@@ -48,56 +49,61 @@ public class ShoppingCartService {
             throw new InsufficientQuantityException("Insufficient product quantity.");
         }
 
+        System.out.println("validation passed");
         //Checking if cart is already present for userID or not
         Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findByUserId(userId);
 
+        //Checking if shopping cart present for userID
+
         if(shoppingCart.isPresent()){
             ShoppingCart existingCart = shoppingCart.get();
-            // update the quantity
-            int updatedQuantity = existingCart.getQuantity() + quantity;
-            existingCart.setQuantity(updatedQuantity);
-
-            //TODO add quantity for every product of cart
-//            Product tempProduct = new Product();
-//            tempProduct.setProductName(product.getProductName());
-//            tempProduct.setPrice(product);
 
             //update product list
-            List<Product> productList = existingCart.getProducts(); // Assuming you have a method to get the list of products in ShoppingCart
-            productList.add(product); // Add the new product to the list
-            existingCart.setProducts(productList); // Set the updated product list back to the cart
+            try {
+                //getting existing cart products
+                List<cartProducts> existingCartProducts = existingCart.getCart();
+                boolean found = false;
+                //adding new entry in cart products
+                cartProducts tempCart = new cartProducts();
 
-            //save cart
-            shoppingCartRepository.save(existingCart);
-            System.out.println("existing shopping cart updated.");
+                for (cartProducts cp : existingCartProducts) {
+                    if (Objects.equals(cp.getProductId(), productId)) {
+                        // Update the quantity if the product ID matches
+                        tempCart = cp;
+                        quantity = cp.getProductQuantity() + quantity;
+                    }
+                }
+
+                tempCart.setProductQuantity(quantity);
+                existingCartProducts.remove(tempCart);
+                existingCartProducts.add(new cartProducts(productId,userId,quantity));
+
+                System.out.println(existingCartProducts);
+
+                existingCart.setCart(existingCartProducts);
+
+                //save cart
+                shoppingCartRepository.save(existingCart);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }else{
             try {
                 //add new cart for user
+                cartProducts cart = new cartProducts();
+                    cart.setProductId(productId);
+                    cart.setUId(userId);
+                    cart.setProductQuantity(quantity);
+                List<cartProducts> cartProducts = new ArrayList<>();
+                    cartProducts.add(cart);
                 ShoppingCart cartItem = new ShoppingCart();
-                cartItem.setUser(user);
-                List<Product> productList = new ArrayList<>();
-                productList.add(product);
-                cartItem.setProducts(productList);
-                cartItem.setQuantity(quantity);
-
+                    cartItem.setUser(user);
+                    cartItem.setCart(cartProducts);
                 shoppingCartRepository.save(cartItem);
             }catch (Throwable e){
                 e.printStackTrace();
             }
         }
-
-
-        //        try {
-        //            userData = new User(User.builder()
-        //                    .id(userDto.getId())
-        //                    .email(userDto.getEmail())
-        //                    .firstname(userDto.getFirstname())
-        //                    .lastname(userDto.getLastname())
-        //                    .build());
-        //        }catch(Throwable e){
-        //            e.printStackTrace();
-        //        }
-
     }
 
     public List<ShoppingCart> getAllShoppingCartItems() {
