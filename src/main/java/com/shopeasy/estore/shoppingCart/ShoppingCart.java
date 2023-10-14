@@ -3,6 +3,7 @@ package com.shopeasy.estore.shoppingCart;
 import com.shopeasy.estore.product.Product;
 import com.shopeasy.estore.shoppingCart.cartProducts.cartProducts;
 import com.shopeasy.estore.user.User;
+import com.shopeasy.estore.user.userDto.userdto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,6 @@ public class ShoppingCart {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-
 //        @OneToMany(fetch = FetchType.EAGER)
 //        @JoinColumn(name = "product_id", referencedColumnName = "id")
 //        private ArrayList<Product> product;
@@ -29,20 +29,13 @@ public class ShoppingCart {
 //        @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
 //        private List<Product> products = new ArrayList<>();
 
-        @OneToOne
+        @OneToOne(cascade = CascadeType.ALL)
         @JoinColumn(name = "user_id", referencedColumnName = "id")
-        private User user;
+        private userdto userdto;
 //        @OneToOne
-//        @JoinColumn(name = "uId", referencedColumnName = "uId")
-//        private userDto user;
+//        @JoinColumn(name = "user_id", referencedColumnName = "id")
+//        private User user;
 
         @OneToMany(cascade = CascadeType.ALL)
         private List<cartProducts> cart;
-        //private HashMap<Long,Integer> addedCartProducts;
-        //private int quantity;
-
-
-
-
-
 }

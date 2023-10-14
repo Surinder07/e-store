@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "cartProducts")
 @Entity
@@ -23,12 +22,9 @@ public class cartProducts {
 
     public int productQuantity = 1;
 
-    public Long uId;
 
-
-    public cartProducts(Long productId,Long uId, int productQuantity) {
+    public cartProducts(Long productId, int productQuantity) {
         this.productId = productId;
-        this.uId=uId;
         this.productQuantity = productQuantity;
 
     }

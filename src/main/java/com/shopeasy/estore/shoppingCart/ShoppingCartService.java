@@ -3,27 +3,30 @@ package com.shopeasy.estore.shoppingCart;
 import com.shopeasy.estore.auth.UserNotFoundException;
 import com.shopeasy.estore.product.Product;
 import com.shopeasy.estore.product.ProductRepository;
+import com.shopeasy.estore.product.ProductService;
 import com.shopeasy.estore.security.exception.InsufficientQuantityException;
 import com.shopeasy.estore.security.exception.ProductNotFoundException;
 import com.shopeasy.estore.shoppingCart.cartProducts.cartProducts;
 import com.shopeasy.estore.user.User;
 import com.shopeasy.estore.user.UserRepository;
-import lombok.Builder;
+import com.shopeasy.estore.user.UserService;
+import com.shopeasy.estore.user.userDto.userdto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static springfox.documentation.spi.service.contexts.SecurityContext.builder;
+import java.util.*;
 
 @Service
 public class ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private UserService userService;
     private  final UserRepository userRepository;
 
     @Autowired
@@ -33,53 +36,43 @@ public class ShoppingCartService {
         this.userRepository = userRepository;
     }
 
-    public void addToCart(Long productId, Long userId, int quantity) {
-        //User userData = null;
-
+    public void addToCart(Long productId, Long uId, int quantity) {
         //Check for user exist or not
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
-
+        User user = userService.userExist(uId);
+        ShoppingCart existingCart = null;
         //Check for product is present or not
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found."));
-
+        Product product = productService.productExist(productId);
         //check to see if requested quantity is less than inventory or not.
         if (product.getAvailableQuantity() < quantity) {
             throw new InsufficientQuantityException("Insufficient product quantity.");
         }
-
-        System.out.println("validation passed");
         //Checking if cart is already present for userID or not
-        Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findByUserId(userId);
+        List<ShoppingCart> shoppingCart = shoppingCartRepository.findAll();
 
-        //Checking if shopping cart present for userID
+        for(ShoppingCart sc :shoppingCart ){
+            if(Objects.equals(sc.getUserdto().userId, uId)){
+                existingCart = sc;
+            }
+        }
 
-        if(shoppingCart.isPresent()){
-            ShoppingCart existingCart = shoppingCart.get();
-
+        //Checking if shopping cart present for given userID
+        if(existingCart != null){
             //update product list
             try {
-                //getting existing cart products
                 List<cartProducts> existingCartProducts = existingCart.getCart();
-                boolean found = false;
                 //adding new entry in cart products
                 cartProducts tempCart = new cartProducts();
 
+                // Update the quantity if the product ID matches
                 for (cartProducts cp : existingCartProducts) {
                     if (Objects.equals(cp.getProductId(), productId)) {
-                        // Update the quantity if the product ID matches
                         tempCart = cp;
                         quantity = cp.getProductQuantity() + quantity;
                     }
                 }
-
                 tempCart.setProductQuantity(quantity);
                 existingCartProducts.remove(tempCart);
-                existingCartProducts.add(new cartProducts(productId,userId,quantity));
-
-                System.out.println(existingCartProducts);
-
+                existingCartProducts.add(new cartProducts(productId,quantity));
                 existingCart.setCart(existingCartProducts);
 
                 //save cart
@@ -90,15 +83,23 @@ public class ShoppingCartService {
         }else{
             try {
                 //add new cart for user
+                List<cartProducts> cartProducts = new ArrayList<>();
+
                 cartProducts cart = new cartProducts();
                     cart.setProductId(productId);
-                    cart.setUId(userId);
                     cart.setProductQuantity(quantity);
-                List<cartProducts> cartProducts = new ArrayList<>();
                     cartProducts.add(cart);
+
+                userdto userdto = new userdto();
+                    userdto.setUserId(uId);
+                    userdto.setEmail(user.getEmail());
+                    userdto.setFirstname(user.getFirstname());
+                    userdto.setLastname(user.getLastname());
+
                 ShoppingCart cartItem = new ShoppingCart();
-                    cartItem.setUser(user);
+                    cartItem.setUserdto(userdto);
                     cartItem.setCart(cartProducts);
+
                 shoppingCartRepository.save(cartItem);
             }catch (Throwable e){
                 e.printStackTrace();
@@ -116,6 +117,6 @@ public class ShoppingCartService {
             shoppingCartRepository.deleteById(productId);
             return true; // Item removed
         }
-        return false; // Not Found
+        return false;
     }
 }

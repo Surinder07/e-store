@@ -30,7 +30,7 @@ public class ShoppingCartController {
         } catch (InsufficientQuantityException e) {
             return ResponseEntity.badRequest().body("Insufficient product quantity.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -39,6 +39,7 @@ public class ShoppingCartController {
         List<ShoppingCart> shoppingCartItems = null;
         try {
             shoppingCartItems = shoppingCartService.getAllShoppingCartItems();
+
         }catch (Exception e){
             e.printStackTrace();
         }
