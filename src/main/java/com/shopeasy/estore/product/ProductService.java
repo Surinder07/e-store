@@ -25,6 +25,11 @@ public class ProductService {
         }
     }
 
+    public Product productExist(Long productId){
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found."));
+    }
+
     public void saveProduct(Product product) {
         productRepository.save(product);
     }
